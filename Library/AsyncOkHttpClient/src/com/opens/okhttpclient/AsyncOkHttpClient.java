@@ -59,17 +59,72 @@ public class AsyncOkHttpClient {
 		}
 	}
 	
-	public void get(String url, String contentType, AsyncHttpResponse reseponse) {
-		this.get(url, contentType, reseponse, null);
+	public void get(String url, String contentType, AsyncHttpResponse response) {
+		this.get(url, contentType, null, response);
 	}
 	
 	public void get(String url, AsyncHttpResponse response) {
-		this.get(url, null, response, null);
+		this.get(url, null, null, response);
 	}
 	
-	public void get(String url, String contentType, AsyncHttpResponse response, RequestParams params) {
+	public void get(String url, RequestParams params, AsyncHttpResponse response) {
+		this.get(url, null, params, response);
+	}
+	
+	public void get(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
 		this.mRequest.setRequestMethod("GET");
 		this.sendRequest(this.mClient, Util.getUrlWithQueryString(url, params), response, contentType, params);
+	}
+	
+	public void post(String url, String contentType, AsyncHttpResponse response) {
+		this.post(url, contentType, null, response);
+	}
+	
+	public void post(String url, AsyncHttpResponse response) {
+		this.post(url, null, null, response);
+	}
+	
+	public void post(String url, RequestParams params, AsyncHttpResponse response) {
+		this.post(url, null, params, response);
+	}
+	
+	public void post(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
+		this.mRequest.setRequestMethod("POST");
+		this.sendRequest(this.mClient, url, response, contentType, params);
+	}
+	
+	public void put(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
+		this.mRequest.setRequestMethod("PUT");
+		this.sendRequest(this.mClient, url, response, contentType, params);
+	}
+	
+	public void put(String url, AsyncHttpResponse response) {
+		this.put(url, null, null, response);
+	}
+	
+	public void put(String url, String contentType, AsyncHttpResponse response) {
+		this.put(url, contentType, null, response);
+	}
+	
+	public void put(String url, RequestParams params, AsyncHttpResponse response) {
+		this.put(url, null, params, response);
+	}
+	
+	public void delete(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
+		this.mRequest.setRequestMethod("DELETE");
+		this.sendRequest(this.mClient, url, response, contentType, params);
+	}
+	
+	public void delete(String url, AsyncHttpResponse response) {
+		this.delete(url, null, null, response);
+	}
+	
+	public void delete(String url, String contentType, AsyncHttpResponse response) {
+		this.delete(url, contentType, null, response);
+	}
+	
+	public void delete(String url, RequestParams params, AsyncHttpResponse response) {
+		this.delete(url, null, params, response);
 	}
 	
 }
