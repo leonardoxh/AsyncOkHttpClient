@@ -114,8 +114,9 @@ public class AsyncHttpResponse implements Handler.Callback {
 	
 	void sendResponseMessage(HttpURLConnection connection) {
 		String responseBody = null;
+		InputStream response = null;
 		try {
-			InputStream response = connection.getInputStream();
+			response = connection.getInputStream();
 			if(response != null) {
 				responseBody = Util.inputStreamToString(response);
 			}
@@ -128,6 +129,8 @@ public class AsyncHttpResponse implements Handler.Callback {
 			}
 		} catch(Exception e) {
 			this.sendFailMessage(e, null);
+		} finally {
+			if(response != null) Util.closeQuietly(response);
 		}
 	}
 	

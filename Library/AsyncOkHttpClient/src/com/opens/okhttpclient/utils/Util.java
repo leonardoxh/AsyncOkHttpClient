@@ -16,6 +16,8 @@
 package com.opens.okhttpclient.utils;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -45,6 +47,12 @@ public final class Util {
 			}
 		}
 		return url;
+	}
+	
+	public static void closeQuietly(Closeable closeable) {
+		try {
+			closeable.close();
+		} catch(IOException ignored) { }
 	}
 	
 }
