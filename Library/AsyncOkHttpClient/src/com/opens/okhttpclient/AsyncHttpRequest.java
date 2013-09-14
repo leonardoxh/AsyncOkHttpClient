@@ -52,6 +52,7 @@ public class AsyncHttpRequest implements Runnable {
 					if(this.mResponse != null) { //TODO - Possible resource leak, close the inputstream
 						this.mClient.setRequestMethod(this.mRequest.getRequestMethod());
 						if(this.mRequestParams != null && !this.mRequest.getRequestMethod().equals("GET")) {
+							this.mClient.setDoOutput(true);
 							OutputStream params = this.mClient.getOutputStream();
 							params.write(this.mRequestParams.toString().getBytes());
 							params.close();

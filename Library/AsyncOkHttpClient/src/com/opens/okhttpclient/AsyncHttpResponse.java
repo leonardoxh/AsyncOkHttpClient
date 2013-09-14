@@ -15,7 +15,6 @@
  */
 package com.opens.okhttpclient;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
@@ -27,7 +26,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-public class AsyncHttpResponse {
+public class AsyncHttpResponse implements Handler.Callback {
 	
 	protected static final int SUCCESS = 0;
 	protected static final int FAIL = 1;
@@ -37,16 +36,7 @@ public class AsyncHttpResponse {
 	private Handler mHandler;
 	
 	public AsyncHttpResponse() {
-		if(Looper.myLooper() != null) {
-			this.mHandler = new Handler() {
-				
-				@Override
-				public void handleMessage(Message msg) {
-					AsyncHttpResponse.this.handleMessage(msg);
-				}
-				
-			};
-		}
+		if(Looper.myLooper() != null) this.mHandler = new Handler(this);
 	}
 	
 	public void onStart() { }
@@ -81,7 +71,8 @@ public class AsyncHttpResponse {
 		this.onError(error, responseBody);
 	}
 	
-	protected void handleMessage(Message message) {
+	@Override
+	public boolean handleMessage(Message message) {
 		switch(message.what) {
 			case START:
 				this.onStart();
@@ -98,6 +89,7 @@ public class AsyncHttpResponse {
 				this.handleFailMessage((Throwable)failResponse[0], (String) failResponse[1]);
 				break;
 		}
+		return true;
 	}
 	
 	protected void sendMessage(Message message) {
@@ -123,22 +115,20 @@ public class AsyncHttpResponse {
 	void sendResponseMessage(HttpURLConnection connection) {
 		String responseBody = null;
 		try {
+			connection.connect();
 			InputStream response = connection.getInputStream();
 			if(response != null) {
 				responseBody = Util.inputStreamToString(response);
 			}
-		} catch(Exception e) {
-			this.sendFailMessage(e, null);
-		}
-		try {
-			int responseCode = connection.getResponseCode();
+			final int responseCode = connection.getResponseCode();
 			if(responseCode >= 300) {
 				this.sendFailMessage(new HttpResponseException(responseCode, 
 						connection.getResponseMessage()), responseBody);
 			} else {
 				this.sendSuccessMessage(responseCode, responseBody);
 			}
-		} catch(IOException e) {
+			connection.disconnect();
+		} catch(Exception e) {
 			this.sendFailMessage(e, null);
 		}
 	}
