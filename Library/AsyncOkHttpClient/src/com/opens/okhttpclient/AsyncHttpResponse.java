@@ -76,20 +76,20 @@ public class AsyncHttpResponse implements Handler.Callback {
 		switch(message.what) {
 			case START:
 				this.onStart();
-				break;
+				return true;
 			case FINISH:
 				this.onFinish();
-				break;
+				return true;
 			case SUCCESS:
 				Object[] successResponse = (Object[])message.obj;
 				this.handleSuccessMessage(((Integer) successResponse[0]).intValue(), (String) successResponse[1]);
-				break;
+				return true;
 			case FAIL:
 				Object[] failResponse = (Object[])message.obj;
 				this.handleFailMessage((Throwable)failResponse[0], (String) failResponse[1]);
-				break;
+				return true;
 		}
-		return true;
+		return false;
 	}
 	
 	protected void sendMessage(Message message) {
