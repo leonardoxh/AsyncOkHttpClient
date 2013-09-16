@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.okhttpclient;
+package com.opens.asyncokhttpclient;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import com.opens.okhttpclient.utils.Util;
+import com.opens.asyncokhttpclient.utils.Util;
 import com.squareup.okhttp.OkHttpClient;
 
 public class AsyncOkHttpClient {

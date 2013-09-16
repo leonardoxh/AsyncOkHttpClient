@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.okhttpclient;
+package com.opens.asyncokhttpclient;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 import org.apache.http.client.HttpResponseException;
 
-import com.opens.okhttpclient.utils.Util;
+import com.opens.asyncokhttpclient.utils.Util;
 
 import android.os.Handler;
 import android.os.Looper;

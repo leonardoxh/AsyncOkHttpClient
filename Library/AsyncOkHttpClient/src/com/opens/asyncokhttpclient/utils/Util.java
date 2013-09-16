@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.okhttpclient.utils;
+package com.opens.asyncokhttpclient.utils;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.opens.okhttpclient.RequestParams;
+import com.opens.asyncokhttpclient.RequestParams;
 
 public final class Util {
 	

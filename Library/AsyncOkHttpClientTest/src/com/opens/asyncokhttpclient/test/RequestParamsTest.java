@@ -1,11 +1,11 @@
-package com.opens.okhttpclient.test;
+package com.opens.asyncokhttpclient.test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
 
-import com.opens.okhttpclient.RequestParams;
+import com.opens.asyncokhttpclient.RequestParams;
 
 import android.test.AndroidTestCase;
 
