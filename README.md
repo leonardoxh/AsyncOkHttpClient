@@ -19,7 +19,7 @@ Features
 
 Note
 -------- 
-- **This library is beta yet and no have all the resources, such as unity tests, file upload, json response, documentation and Maven integration**
+- **This library still in beta yet and doesn't have all the resources, such as unity tests, file upload, documentation and Maven integration**
 - **This library needs the OkHttpClient jar in the libs folder.**
 
 
