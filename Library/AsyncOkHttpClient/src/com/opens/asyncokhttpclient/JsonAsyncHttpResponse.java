@@ -1,5 +1,5 @@
 /*   
- * Copyright [2013] [Leonardo Rossetto]
+ * Copyright 2013-2014 Leonardo Rossetto
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 	@Override
 	protected void sendSuccessMessage(int statusCode, String responseBody) {
 		try {
-			Object jsonResponse = this.parseResponse(responseBody);
-			this.sendMessage(this.obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
+			Object jsonResponse = parseResponse(responseBody);
+			sendMessage(obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
 		} catch(JSONException e) {
-			this.sendFailMessage(e, responseBody);
+			sendFailMessage(e, responseBody);
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 		switch(message.what) {
 			case SUCCESS_JSON:
 				Object[] response = (Object[]) message.obj;
-				this.handleSuccessJsonMessage(((Integer)response[0]).intValue(), response[1]);
+				handleSuccessJsonMessage(((Integer)response[0]).intValue(), response[1]);
 				return true;
 			default:
 				return super.handleMessage(message);
@@ -60,11 +60,11 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 	
 	protected void handleSuccessJsonMessage(int stautsCode, Object jsonResponse) {
 		if(jsonResponse instanceof JSONObject) {
-			this.onSuccess(stautsCode, (JSONObject)jsonResponse);
+			onSuccess(stautsCode, (JSONObject)jsonResponse);
 		} else if(jsonResponse instanceof JSONArray) {
-			this.onSuccess(stautsCode, (JSONArray) jsonResponse);
+			onSuccess(stautsCode, (JSONArray) jsonResponse);
 		} else {
-			this.onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), null);
+			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), null);
 		}
 	}
 

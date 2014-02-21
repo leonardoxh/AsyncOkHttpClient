@@ -1,5 +1,5 @@
 /*   
- * Copyright [2013] [Leonardo Rossetto]
+ * Copyright 2013-2014 Leonardo Rossetto
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class AsyncHttpResponse implements Handler.Callback {
 	private Handler mHandler;
 	
 	public AsyncHttpResponse() {
-		if(Looper.myLooper() != null) this.mHandler = new Handler(this);
+		if(Looper.myLooper() != null) mHandler = new Handler(this);
 	}
 	
 	public void onStart() { }
@@ -48,62 +48,62 @@ public class AsyncHttpResponse implements Handler.Callback {
 	public void onError(Throwable error, String content) { }
 	
 	protected void sendSuccessMessage(int statusCode, String responseBody) {
-		this.sendMessage(this.obtainMessage(SUCCESS, new Object[] {Integer.valueOf(statusCode), responseBody}));
+		sendMessage(obtainMessage(SUCCESS, new Object[] {Integer.valueOf(statusCode), responseBody}));
 	}
 	
 	protected void sendFailMessage(Throwable error, String content) {
-		this.sendMessage(this.obtainMessage(FAIL, new Object[] {error, content}));
+		sendMessage(obtainMessage(FAIL, new Object[] {error, content}));
 	}
 	
 	protected void sendStartMessage() {
-		this.sendMessage(this.obtainMessage(START, null));
+		sendMessage(obtainMessage(START, null));
 	}
 	
 	protected void sendEndMessage() {
-		this.sendMessage(this.obtainMessage(FINISH, null));
+		sendMessage(obtainMessage(FINISH, null));
 	}
 	
 	protected void handleSuccessMessage(int statusCode, String responseBody) {
-		this.onSuccess(statusCode, responseBody);
+		onSuccess(statusCode, responseBody);
 	}
 	
 	protected void handleFailMessage(Throwable error, String responseBody) {
-		this.onError(error, responseBody);
+		onError(error, responseBody);
 	}
 	
 	@Override
 	public boolean handleMessage(Message message) {
 		switch(message.what) {
 			case START:
-				this.onStart();
+				onStart();
 				return true;
 			case FINISH:
-				this.onFinish();
+				onFinish();
 				return true;
 			case SUCCESS:
 				Object[] successResponse = (Object[])message.obj;
-				this.handleSuccessMessage(((Integer) successResponse[0]).intValue(), (String) successResponse[1]);
+				handleSuccessMessage(((Integer) successResponse[0]).intValue(), (String) successResponse[1]);
 				return true;
 			case FAIL:
 				Object[] failResponse = (Object[])message.obj;
-				this.handleFailMessage((Throwable)failResponse[0], (String) failResponse[1]);
+				handleFailMessage((Throwable)failResponse[0], (String) failResponse[1]);
 				return true;
 		}
 		return false;
 	}
 	
 	protected void sendMessage(Message message) {
-		if(this.mHandler != null) {
-			this.mHandler.sendMessage(message);
+		if(mHandler != null) {
+			mHandler.sendMessage(message);
 		} else {
-			this.handleMessage(message);
+			handleMessage(message);
 		}
 	}
 	
 	protected Message obtainMessage(int responseMessage, Object response) {
 		Message message = null;
-		if(this.mHandler != null) {
-			message = this.mHandler.obtainMessage(responseMessage, response);
+		if(mHandler != null) {
+			message = mHandler.obtainMessage(responseMessage, response);
 		} else {
 			message = Message.obtain();
 			message.what = responseMessage;
@@ -120,15 +120,15 @@ public class AsyncHttpResponse implements Handler.Callback {
 			if(responseCode >= 300) {
 				response = connection.getErrorStream();
 				if(response != null) responseBody = Util.inputStreamToString(response);
-				this.sendFailMessage(new HttpResponseException(responseCode, 
+				sendFailMessage(new HttpResponseException(responseCode, 
 						connection.getResponseMessage()), responseBody);
 			} else {
 				response = connection.getInputStream();
 				if(response != null) responseBody = Util.inputStreamToString(response);
-				this.sendSuccessMessage(responseCode, responseBody);
+				sendSuccessMessage(responseCode, responseBody);
 			}			
 		} catch(Exception e) {
-			this.sendFailMessage(e, null);
+			sendFailMessage(e, null);
 		} finally {
 			if(response != null) Util.closeQuietly(response);
 		}

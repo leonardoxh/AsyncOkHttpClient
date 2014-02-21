@@ -1,5 +1,5 @@
 /*   
- * Copyright [2013] [Leonardo Rossetto]
+ * Copyright 2013-2014 Leonardo Rossetto
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,34 +20,38 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RequestParams {
 	
-	private final ConcurrentHashMap<String, String> params;
-	
-	public RequestParams() {
-		this.params = new ConcurrentHashMap<String, String>();
-	}
+	private final ConcurrentHashMap<String, String> mParams = new ConcurrentHashMap<String, String>();
 	
 	public void put(Map<String, String> source) {
 		for(Map.Entry<String, String> entry : source.entrySet()) {
-			this.put(entry.getKey(), entry.getValue());
+			put(entry.getKey(), entry.getValue());
 		}
 	}
 	
 	public void put(String key, String value) {
 		if(key != null && value != null) {
-			this.params.put(key, value);
+			mParams.put(key, value);
 		}
 	}
 	
-	@Override
-	public String toString() {
+	public void clear() {
+		mParams.clear();
+	}
+	
+	public String getParams() {
 		StringBuilder result = new StringBuilder();
-		for(ConcurrentHashMap.Entry<String, String> entry : this.params.entrySet()) {
+		for(ConcurrentHashMap.Entry<String, String> entry : mParams.entrySet()) {
 			if(result.length() > 0) result.append("&");
 			result.append(entry.getKey());
 			result.append("=");
 			result.append(entry.getValue());
 		}
 		return result.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return getParams();
 	}
 	
 }

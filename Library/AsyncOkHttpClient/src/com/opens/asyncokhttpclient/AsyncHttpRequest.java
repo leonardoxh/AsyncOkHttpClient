@@ -1,5 +1,5 @@
 /*   
- * Copyright [2013] [Leonardo Rossetto]
+ * Copyright 2013-2014 Leonardo Rossetto
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,29 +21,29 @@ import java.util.Map;
 
 public class AsyncHttpRequest implements Runnable {
 	
-	private AsyncHttpResponse mResponse;
-	private HttpURLConnection mClient;
-	private RequestParams mRequestParams;
-	private RequestModel mRequest;
+	private final AsyncHttpResponse mResponse;
+	private final HttpURLConnection mClient;
+	private final RequestParams mRequestParams;
+	private final RequestModel mRequest;
 	
 	public AsyncHttpRequest(HttpURLConnection client, AsyncHttpResponse responseHandler, 
 			RequestParams params, RequestModel request) {
-		this.mResponse = responseHandler;
-		this.mClient = client;
-		this.mRequest = request;
-		this.mRequestParams = params;
+		mResponse = responseHandler;
+		mClient = client;
+		mRequest = request;
+		mRequestParams = params;
 	}
 	
 	@Override
 	public void run() {
-		if(this.mResponse == null) throw new NullPointerException("response == null");
+		if(mResponse == null) throw new NullPointerException("response == null");
 		try {
-			this.mResponse.sendStartMessage();
-			this.makeRequest();
-			this.mResponse.sendEndMessage();
+			mResponse.sendStartMessage();
+			makeRequest();
+			mResponse.sendEndMessage();
 		} catch(Exception e) {
-			this.mResponse.sendFailMessage(e, null);
-			this.mResponse.sendEndMessage();
+			mResponse.sendFailMessage(e, null);
+			mResponse.sendEndMessage();
 		}
 	}
 	
@@ -51,17 +51,17 @@ public class AsyncHttpRequest implements Runnable {
 		if(!Thread.currentThread().isInterrupted()) {
 			try {
 				if(!Thread.currentThread().isInterrupted()) {
-					if(this.mResponse != null) { //TODO - Possible resource leak, close the inputstream
-						this.mClient.setRequestMethod(this.mRequest.getRequestMethod());
-						for(Map.Entry<String, String> entry : this.mRequest.getHeaders().entrySet()) {
-							this.mClient.setRequestProperty(entry.getKey(), entry.getValue());
+					if(mResponse != null) { //TODO - Possible resource leak, close the inputstream
+						mClient.setRequestMethod(mRequest.getRequestMethod());
+						for(Map.Entry<String, String> entry : mRequest.getHeaders().entrySet()) {
+							mClient.setRequestProperty(entry.getKey(), entry.getValue());
 						}
-						if(this.mRequestParams != null && !this.mRequest.getRequestMethod().equals("GET")) {
-							OutputStream params = this.mClient.getOutputStream();
-							params.write(this.mRequestParams.toString().getBytes());
+						if(mRequestParams != null && !mRequest.getRequestMethod().equals("GET")) {
+							OutputStream params = mClient.getOutputStream();
+							params.write(mRequestParams.getParams().getBytes());
 							params.close();
 						}
-						this.mResponse.sendResponseMessage(this.mClient);
+						this.mResponse.sendResponseMessage(mClient);
 					}
 				}
 			} catch(Exception e) {

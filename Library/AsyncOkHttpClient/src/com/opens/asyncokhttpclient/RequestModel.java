@@ -1,5 +1,5 @@
 /*   
- * Copyright [2013] [Leonardo Rossetto]
+ * Copyright [2013] Leonardo Rossetto
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,42 +22,40 @@ import java.util.Map;
 public class RequestModel {
 	
 	private String mRequestMethod;
-	private Map<String, String> mHeaders;
+	private final Map<String, String> mHeaders = new HashMap<String, String>();
 	private URL mUrl;
 	
 	public RequestModel(URL url) {
-		this.mHeaders = new HashMap<String, String>();
-		this.mRequestMethod = "GET";
-		this.mUrl = url;
+		mRequestMethod = "GET";
+		mUrl = url;
 	}
 	
 	public RequestModel() {
-		this.mHeaders = new HashMap<String, String>();
-		this.mRequestMethod = "GET";
+		mRequestMethod = "GET";
 	}
 	
 	public void setUrl(URL url) {
-		this.mUrl = url;
+		mUrl = url;
 	}
 	
 	public URL getURL() {
-		return this.mUrl;
+		return mUrl;
 	}
 	
 	public void setRequestMethod(String requestMethod) {
-		this.mRequestMethod = requestMethod;
+		mRequestMethod = requestMethod;
 	}
 	
 	public void addHeader(String key, String value) {
-		this.mHeaders.put(key, value);
+		mHeaders.put(key, value);
 	}
 	
 	public Map<String, String> getHeaders() {
-		return this.mHeaders;
+		return mHeaders;
 	}
 	
 	public String getRequestMethod() {
-		return this.mRequestMethod;
+		return mRequestMethod;
 	}
 	
 }
