@@ -116,17 +116,17 @@ public class AsyncHttpResponse implements Handler.Callback {
 		String responseBody = null;
 		InputStream response = null;
 		try {
-			response = connection.getInputStream();
-			if(response != null) {
-				responseBody = Util.inputStreamToString(response);
-			}
-			final int responseCode = connection.getResponseCode();
+			int responseCode = connection.getResponseCode();
 			if(responseCode >= 300) {
+				response = connection.getErrorStream();
+				if(response != null) responseBody = Util.inputStreamToString(response);
 				this.sendFailMessage(new HttpResponseException(responseCode, 
 						connection.getResponseMessage()), responseBody);
 			} else {
+				response = connection.getInputStream();
+				if(response != null) responseBody = Util.inputStreamToString(response);
 				this.sendSuccessMessage(responseCode, responseBody);
-			}
+			}			
 		} catch(Exception e) {
 			this.sendFailMessage(e, null);
 		} finally {

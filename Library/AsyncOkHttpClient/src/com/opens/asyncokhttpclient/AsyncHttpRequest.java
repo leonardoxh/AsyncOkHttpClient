@@ -36,12 +36,14 @@ public class AsyncHttpRequest implements Runnable {
 	
 	@Override
 	public void run() {
+		if(this.mResponse == null) throw new NullPointerException("response == null");
 		try {
-			if(this.mResponse != null) this.mResponse.sendStartMessage();
+			this.mResponse.sendStartMessage();
 			this.makeRequest();
-			if(this.mResponse != null) this.mResponse.sendEndMessage();
+			this.mResponse.sendEndMessage();
 		} catch(Exception e) {
-			if(this.mResponse != null) this.mResponse.sendEndMessage();
+			this.mResponse.sendFailMessage(e, null);
+			this.mResponse.sendEndMessage();
 		}
 	}
 	
