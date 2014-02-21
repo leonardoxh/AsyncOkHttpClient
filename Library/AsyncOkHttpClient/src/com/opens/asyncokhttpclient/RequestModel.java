@@ -21,18 +21,15 @@ import java.util.Map;
 
 public class RequestModel {
 	
-	private String mRequestMethod;
+	private String mRequestMethod = "GET";
 	private final Map<String, String> mHeaders = new HashMap<String, String>();
 	private URL mUrl;
 	
 	public RequestModel(URL url) {
-		mRequestMethod = "GET";
 		mUrl = url;
 	}
 	
-	public RequestModel() {
-		mRequestMethod = "GET";
-	}
+	public RequestModel() { }
 	
 	public void setUrl(URL url) {
 		mUrl = url;

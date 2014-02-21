@@ -31,7 +31,7 @@ public final class Util {
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(source));
 	    StringBuilder out = new StringBuilder();
 	    String line;
-	    while ((line = reader.readLine()) != null) {
+	    while((line = reader.readLine()) != null) {
 	        out.append(line);
 	    }
 	    return out.toString();
