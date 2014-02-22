@@ -1,22 +1,40 @@
-.DS_Store
+# Custom
+_site
 
-# built application files
-*.apk
-*.ap_
+# Ant
+MANIFEST.MF
+./*.jar
+build.num
+build
 
-# files for the dex VM
-*.dex
-
-# Java class files
-*.class
-
-# generated files
-bin/
-gen/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Eclipse project files
+# ADT
 .classpath
 .project
+.settings
+local.properties
+bin
+gen
+_layouts
+proguard.cfg
+
+# OSX
+.DS_Store
+
+# Github
+gh-pages
+
+# Gradle
+.gradle
+build
+
+# IDEA
+*.iml
+*.ipr
+*.iws
+out
+.idea
+
+# Maven
+target
+release.properties
+pom.xml.*
