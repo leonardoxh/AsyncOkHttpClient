@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.opens.asyncokhttpclient.utils.RequestMethod;
 import com.opens.asyncokhttpclient.utils.Util;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -71,7 +72,7 @@ public class AsyncOkHttpClient {
 	}
 	
 	public void get(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod("GET");
+		mRequest.setRequestMethod(RequestMethod.GET);
 		sendRequest(mClient, Util.getUrlWithQueryString(url, params), response, contentType, params);
 	}
 	
@@ -88,12 +89,12 @@ public class AsyncOkHttpClient {
 	}
 	
 	public void post(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod("POST");
+		mRequest.setRequestMethod(RequestMethod.POST);
 		sendRequest(mClient, url, response, contentType, params);
 	}
 	
 	public void put(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod("PUT");
+		mRequest.setRequestMethod(RequestMethod.PUT);
 		sendRequest(mClient, url, response, contentType, params);
 	}
 	
@@ -110,7 +111,7 @@ public class AsyncOkHttpClient {
 	}
 	
 	public void delete(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod("DELETE");
+		mRequest.setRequestMethod(RequestMethod.DELETE);
 		sendRequest(mClient, url, response, contentType, params);
 	}
 	

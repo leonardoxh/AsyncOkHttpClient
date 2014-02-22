@@ -15,6 +15,8 @@
  */
 package com.opens.asyncokhttpclient;
 
+import com.opens.asyncokhttpclient.utils.RequestMethod;
+
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.Map;
@@ -56,7 +58,7 @@ public class AsyncHttpRequest implements Runnable {
 						for(Map.Entry<String, String> entry : mRequest.getHeaders().entrySet()) {
 							mClient.setRequestProperty(entry.getKey(), entry.getValue());
 						}
-						if(mRequestParams != null && !mRequest.getRequestMethod().equals("GET")) {
+						if(mRequestParams != null && !RequestMethod.GET.equals(mRequest.getRequestMethod())) {
 							OutputStream params = mClient.getOutputStream();
 							params.write(mRequestParams.getParams().getBytes());
 							params.close();
