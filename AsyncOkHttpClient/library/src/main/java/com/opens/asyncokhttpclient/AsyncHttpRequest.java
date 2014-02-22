@@ -53,7 +53,7 @@ public class AsyncHttpRequest implements Runnable {
 		if(!Thread.currentThread().isInterrupted()) {
 			try {
 				if(!Thread.currentThread().isInterrupted()) {
-					if(mResponse != null) { //TODO - Possible resource leak, close the inputstream
+					if(mResponse != null) {
 						mClient.setRequestMethod(mRequest.getRequestMethod());
 						for(Map.Entry<String, String> entry : mRequest.getHeaders().entrySet()) {
 							mClient.setRequestProperty(entry.getKey(), entry.getValue());
