@@ -22,12 +22,30 @@ import org.json.JSONTokener;
 
 import android.os.Message;
 
+/**
+ * This handles retrieve a message from
+ * the HttpURLConnection and parse it in a JSON
+ * @author Leonardo Rossetto <leonardoxh@gmail.com>
+ */
 public class JsonAsyncHttpResponse extends AsyncHttpResponse {
-	
+
+    /** Indicate the JSON has a valid json and a success message */
 	protected static final int SUCCESS_JSON = 5;
-	
+
+    /**
+     * Callback that indicate request has finished success
+     * and its a JSONObject
+     * @param statusCode the status code of the request normally 200
+     * @param response the JSON response of this request
+     */
 	public void onSuccess(int statusCode, JSONObject response) { }
-	
+
+    /**
+     * Callback that indicate request has finished success
+     * and its a JSONArray
+     * @param statusCode the status code of the request normally 200
+     * @param response the JSON response of this request
+     */
 	public void onSuccess(int statusCode, JSONArray response) { }
 
 	@Override
@@ -39,10 +57,18 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 			sendFailMessage(e, responseBody);
 		}
 	}
-	
+
+    /**
+     * Parse the response into a valid JSON
+     * @param response the response to parse
+     * @return a JSON parsed and ready to use
+     * @throws JSONException if the JSON is invalid
+     */
 	private Object parseResponse(String response) throws JSONException {
 		response = response.trim();
-		if(response.startsWith("{") || response.startsWith("[")) return new JSONTokener(response).nextValue();
+		if(response.startsWith("{") || response.startsWith("[")) {
+            return new JSONTokener(response).nextValue();
+        }
 		return null;
 	}
 
@@ -57,7 +83,15 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 				return super.handleMessage(message);
 		}
 	}
-	
+
+    /**
+     * Handle the success json message and call the onSuccess callback or the onError
+     * @param stautsCode the message status code of this request
+     * @param jsonResponse the response parsed ready to get instances
+     * @see #onSuccess(int, org.json.JSONObject)
+     * @see #onSuccess(int, org.json.JSONArray)
+     * @see #onError(Throwable, String)
+     */
 	protected void handleSuccessJsonMessage(int stautsCode, Object jsonResponse) {
 		if(jsonResponse instanceof JSONObject) {
 			onSuccess(stautsCode, (JSONObject)jsonResponse);

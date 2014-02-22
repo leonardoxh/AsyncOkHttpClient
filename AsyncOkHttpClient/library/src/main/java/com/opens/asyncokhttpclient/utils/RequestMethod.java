@@ -15,13 +15,23 @@
  */
 package com.opens.asyncokhttpclient.utils;
 
+/**
+ * Class that hold the supported request methods on this library
+ * on the most use cases to be used with {@code com.opens.asyncokhttpclient.RequestModel}
+ * @author Leonardo Rossetto <leonardoxh@gmail.com>
+ * @see com.opens.asyncokhttpclient.RequestModel
+ */
 public final class RequestMethod {
 
+    /** No instances */
     private RequestMethod() { }
 
     public static final String GET = "GET";
+
     public static final String POST = "POST";
+
     public static final String PUT = "PUT";
+
     public static final String DELETE = "DELETE";
 
 }

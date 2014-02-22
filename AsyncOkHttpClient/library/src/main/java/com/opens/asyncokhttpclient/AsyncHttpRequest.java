@@ -21,13 +21,31 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.Map;
 
+/**
+ * Handles the the messages for start/success/error/end of the incomming requests
+ * @author Leonardo Rossetto <leonardoxh@gmail.com>
+ */
 public class AsyncHttpRequest implements Runnable {
-	
+
+    /** The callback response */
 	private final AsyncHttpResponse mResponse;
+
+    /** Client to execute the request */
 	private final HttpURLConnection mClient;
+
+    /** The request parameters for the request */
 	private final RequestParams mRequestParams;
+
+    /** The model that contains the request method and request headers */
 	private final RequestModel mRequest;
-	
+
+    /**
+     * Constructs a new instance of AsyncHttpRequest
+     * @param client the client to execute the given request
+     * @param responseHandler the callback for fire responses like success and error
+     * @param params the request parameters for GET, POST...
+     * @param request the model that contains the request method and headers
+     */
 	public AsyncHttpRequest(HttpURLConnection client, AsyncHttpResponse responseHandler, 
 			RequestParams params, RequestModel request) {
 		mResponse = responseHandler;
@@ -38,7 +56,7 @@ public class AsyncHttpRequest implements Runnable {
 	
 	@Override
 	public void run() {
-		if(mResponse == null) throw new NullPointerException("response == null");
+		if(mResponse == null) throw new NullPointerException("response can't be null");
 		try {
 			mResponse.sendStartMessage();
 			makeRequest();
@@ -48,7 +66,14 @@ public class AsyncHttpRequest implements Runnable {
 			mResponse.sendEndMessage();
 		}
 	}
-	
+
+    /**
+     * Attach the request parameters and headers to request
+     * and sent it to AsyncHttpResponse to execute them
+     * @throws Exception If for any reason the RequestParams cannot be write on request body
+     * @see com.opens.asyncokhttpclient.AsyncHttpResponse
+     * @see com.opens.asyncokhttpclient.RequestParams
+     */
 	private void makeRequest() throws Exception {
 		if(!Thread.currentThread().isInterrupted()) {
 			try {
@@ -58,12 +83,13 @@ public class AsyncHttpRequest implements Runnable {
 						for(Map.Entry<String, String> entry : mRequest.getHeaders().entrySet()) {
 							mClient.setRequestProperty(entry.getKey(), entry.getValue());
 						}
-						if(mRequestParams != null && !RequestMethod.GET.equals(mRequest.getRequestMethod())) {
+						if(mRequestParams != null &&
+                                !RequestMethod.GET.equals(mRequest.getRequestMethod())) {
 							OutputStream params = mClient.getOutputStream();
 							params.write(mRequestParams.getParams().getBytes());
 							params.close();
 						}
-						this.mResponse.sendResponseMessage(mClient);
+						mResponse.sendResponseMessage(mClient);
 					}
 				}
 			} catch(Exception e) {

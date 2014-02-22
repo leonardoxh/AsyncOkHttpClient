@@ -25,47 +25,106 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+/**
+ * Retrive the response from the HttpURLConnection
+ * and send it to the relative callback like onSuccess, onError
+ * @author Leonardo Rossetto <leonardoxh@gmail.com>
+ * @see #onSuccess(int, String)
+ * @see #onError(Throwable, String)
+ * @see #onStart()
+ * @see #onFinish()
+ */
 public class AsyncHttpResponse implements Handler.Callback {
-	
+
+    /** Indicate the response has finished with success */
 	protected static final int SUCCESS = 0;
+
+    /** Indicate the response has failed */
 	protected static final int FAIL = 1;
+
+    /** Indicate the response has started */
 	protected static final int START = 2;
+
+    /** Indicate the response has finished (after onSuccess or onError) */
 	protected static final int FINISH = 3;
-	
+
+    /** Handler used to pass the messages over the threads */
 	private Handler mHandler;
-	
+
+    /** Construct a new instance of AsyncHttpResponse */
 	public AsyncHttpResponse() {
 		if(Looper.myLooper() != null) mHandler = new Handler(this);
 	}
-	
+
+    /** Callback that indicate the request has started */
 	public void onStart() { }
-	
+
+    /** Callback that indicate the request has finished */
 	public void onFinish() { }
-	
+
+    /**
+     * Callback that indicate the request has
+     * this method returns the content of the response
+     * @param statusCode the request status code normally 200 or 202
+     * @param content the request response body
+     */
 	public void onSuccess(int statusCode, String content) { }
-	
+
+    /**
+     * Callback that indicate the request has return error
+     * @param error a Exception class that indicate the error
+     * @param content the page error content if available or null
+     * @see java.net.HttpRetryException
+     */
 	public void onError(Throwable error, String content) { }
-	
+
+    /**
+     * Send the success message to the handler
+     * @param statusCode the success request status code (normally 200 or 202)
+     * @param responseBody the response body of the request (if any) or null
+     */
 	protected void sendSuccessMessage(int statusCode, String responseBody) {
 		sendMessage(obtainMessage(SUCCESS, new Object[] {Integer.valueOf(statusCode), responseBody}));
 	}
-	
+
+    /**
+     * Send the fail message to the handler
+     * @param error the detail exception error
+     * @param content the request response body (if any) or null
+     */
 	protected void sendFailMessage(Throwable error, String content) {
 		sendMessage(obtainMessage(FAIL, new Object[] {error, content}));
 	}
-	
+
+    /**
+     * Send the handle message that indicate the request has started
+     */
 	protected void sendStartMessage() {
 		sendMessage(obtainMessage(START, null));
 	}
-	
+
+    /**
+     * Send the handle message that indicate the request has finished
+     */
 	protected void sendEndMessage() {
 		sendMessage(obtainMessage(FINISH, null));
 	}
-	
+
+    /**
+     * Handle the success message and call the relative callback
+     * @param statusCode the request response status code
+     * @param responseBody the request response body (if any) or null
+     */
 	protected void handleSuccessMessage(int statusCode, String responseBody) {
 		onSuccess(statusCode, responseBody);
 	}
-	
+
+    /**
+     * Handle the fail message and call the relative callback
+     * @param error the detail exception
+     * @param responseBody the response body of the request (if any) or null
+     * @see #onError(Throwable, String)
+     */
 	protected void handleFailMessage(Throwable error, String responseBody) {
 		onError(error, responseBody);
 	}
@@ -90,7 +149,12 @@ public class AsyncHttpResponse implements Handler.Callback {
 		}
 		return false;
 	}
-	
+
+    /**
+     * Send a message over the handler,
+     * if the handler is null no problems it will recreate it
+     * @param message the message for send, can't be null
+     */
 	protected void sendMessage(Message message) {
 		if(mHandler != null) {
 			mHandler.sendMessage(message);
@@ -98,7 +162,14 @@ public class AsyncHttpResponse implements Handler.Callback {
 			handleMessage(message);
 		}
 	}
-	
+
+    /**
+     * Obtain a handler thread message to verify the results
+     * this method will always return a valid message
+     * @param responseMessage the response message identifier
+     * @param response the response object to describle this message
+     * @return a valid thread message based on the given parameters
+     */
 	protected Message obtainMessage(int responseMessage, Object response) {
 		Message message = null;
 		if(mHandler != null) {
@@ -110,7 +181,12 @@ public class AsyncHttpResponse implements Handler.Callback {
 		}
 		return message;
 	}
-	
+
+    /**
+     * Perform the connection with the given client
+     * and return the response to the relative callback
+     * @param connection the connection to execute and collect the informations
+     */
 	void sendResponseMessage(HttpURLConnection connection) {
 		String responseBody = null;
 		InputStream response = null;

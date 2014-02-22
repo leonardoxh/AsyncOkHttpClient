@@ -23,10 +23,22 @@ import java.io.InputStreamReader;
 
 import com.opens.asyncokhttpclient.RequestParams;
 
+/**
+ * Utilitaries class, contains the common methods used
+ * to decode responses and another utils methods
+ * @author Leonardo Rossetto <leonardoxh@gmail.com>
+ */
 public final class Util {
-	
+
+    /** No instances */
 	private Util() { }
-	
+
+    /**
+     * Convert the given InputStream to a String
+     * @param source the InputStream to convert
+     * @return the String converted based on given InputStream
+     * @throws Exception If the given InputStream is null or can't be accessed
+     */
 	public static String inputStreamToString(InputStream source) throws Exception {
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(source));
 	    StringBuilder out = new StringBuilder();
@@ -36,7 +48,16 @@ public final class Util {
 	    }
 	    return out.toString();
 	}
-	
+
+    /**
+     * Util for GET request method, convert the given RequestParams
+     * into a valid URL String query
+     * @param url the base URL to concat the query
+     * @param requestParams the query parameters
+     * @return a valid String URL query for GET methods
+     * @see com.opens.asyncokhttpclient.utils.RequestMethod
+     * @see com.opens.asyncokhttpclient.RequestParams
+     */
 	public static String getUrlWithQueryString(String url, RequestParams requestParams) {
 		if(requestParams != null) {
 			String paramUrl = requestParams.toString();
@@ -48,7 +69,12 @@ public final class Util {
 		}
 		return url;
 	}
-	
+
+    /**
+     * Close any Closeable quietly if any exception
+     * is thrown simple ignore it
+     * @param closeable a class that implements Closeable to close
+     */
 	public static void closeQuietly(Closeable closeable) {
 		try {
 			closeable.close();
