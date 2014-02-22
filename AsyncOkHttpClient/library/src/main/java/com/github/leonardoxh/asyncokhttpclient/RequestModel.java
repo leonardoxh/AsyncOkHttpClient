@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.asyncokhttpclient;
+package com.github.leonardoxh.asyncokhttpclient;
 
-import com.opens.asyncokhttpclient.utils.RequestMethod;
+import com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -66,7 +66,7 @@ class RequestModel {
     /**
      * Set a new request method of this request
      * @param requestMethod the new request method for this request
-     * @see com.opens.asyncokhttpclient.utils.RequestMethod
+     * @see com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod
      */
 	public void setRequestMethod(String requestMethod) {
 		mRequestMethod = requestMethod;

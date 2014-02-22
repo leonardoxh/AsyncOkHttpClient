@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.asyncokhttpclient;
+package com.github.leonardoxh.asyncokhttpclient;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -21,8 +21,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.opens.asyncokhttpclient.utils.RequestMethod;
-import com.opens.asyncokhttpclient.utils.Util;
+import com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod;
+import com.github.leonardoxh.asyncokhttpclient.utils.Util;
 import com.squareup.okhttp.OkHttpClient;
 
 /**
@@ -89,7 +89,7 @@ public class AsyncOkHttpClient {
      * @param contentType the content type for this request if this parameter
      *                    is null a default Content-Type will be used
      * @param params the request parameters null parameters means no parameters
-     * @see com.opens.asyncokhttpclient.AsyncHttpRequest
+     * @see com.github.leonardoxh.asyncokhttpclient.AsyncHttpRequest
      */
 	protected void sendRequest(OkHttpClient client, String url, AsyncHttpResponse response, 
 			String contentType, RequestParams params) {

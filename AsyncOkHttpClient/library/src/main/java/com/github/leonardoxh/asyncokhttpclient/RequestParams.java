@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.asyncokhttpclient;
+package com.github.leonardoxh.asyncokhttpclient;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Representation class for request parameters
  * @author Leonardo Rossetto <leonardoxh@gmail.com>
- * @see com.opens.asyncokhttpclient.utils.RequestMethod
+ * @see com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod
  */
 public class RequestParams {
 

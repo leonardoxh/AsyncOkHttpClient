@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.asyncokhttpclient;
+package com.github.leonardoxh.asyncokhttpclient;
 
 import java.io.InputStream;
 import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
 
-import com.opens.asyncokhttpclient.utils.Util;
+import com.github.leonardoxh.asyncokhttpclient.utils.Util;
 
 import android.os.Handler;
 import android.os.Looper;

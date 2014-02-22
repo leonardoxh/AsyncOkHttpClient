@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.asyncokhttpclient;
+package com.github.leonardoxh.asyncokhttpclient;
 
-import com.opens.asyncokhttpclient.utils.RequestMethod;
+import com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -71,8 +71,8 @@ public class AsyncHttpRequest implements Runnable {
      * Attach the request parameters and headers to request
      * and sent it to AsyncHttpResponse to execute them
      * @throws Exception If for any reason the RequestParams cannot be write on request body
-     * @see com.opens.asyncokhttpclient.AsyncHttpResponse
-     * @see com.opens.asyncokhttpclient.RequestParams
+     * @see com.github.leonardoxh.asyncokhttpclient.AsyncHttpResponse
+     * @see com.github.leonardoxh.asyncokhttpclient.RequestParams
      */
 	private void makeRequest() throws Exception {
 		if(!Thread.currentThread().isInterrupted()) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.asyncokhttpclient.utils;
+package com.github.leonardoxh.asyncokhttpclient.utils;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.opens.asyncokhttpclient.RequestParams;
+import com.github.leonardoxh.asyncokhttpclient.RequestParams;
 
 /**
  * Utilitaries class, contains the common methods used
@@ -55,8 +55,8 @@ public final class Util {
      * @param url the base URL to concat the query
      * @param requestParams the query parameters
      * @return a valid String URL query for GET methods
-     * @see com.opens.asyncokhttpclient.utils.RequestMethod
-     * @see com.opens.asyncokhttpclient.RequestParams
+     * @see com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod
+     * @see com.github.leonardoxh.asyncokhttpclient.RequestParams
      */
 	public static String getUrlWithQueryString(String url, RequestParams requestParams) {
 		if(requestParams != null) {

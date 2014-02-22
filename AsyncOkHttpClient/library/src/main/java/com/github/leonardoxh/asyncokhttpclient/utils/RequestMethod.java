@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.opens.asyncokhttpclient.utils;
+package com.github.leonardoxh.asyncokhttpclient.utils;
 
 /**
  * Class that hold the supported request methods on this library
  * on the most use cases to be used with {@code com.opens.asyncokhttpclient.RequestModel}
  * @author Leonardo Rossetto <leonardoxh@gmail.com>
- * @see com.opens.asyncokhttpclient.RequestModel
+ * @see com.github.leonardoxh.asyncokhttpclient.RequestModel
  */
 public final class RequestMethod {
 
