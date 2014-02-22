@@ -16,9 +16,8 @@
 package com.opens.asyncokhttpclient;
 
 import java.io.InputStream;
+import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
-
-import org.apache.http.client.HttpResponseException;
 
 import com.opens.asyncokhttpclient.utils.Util;
 
@@ -120,8 +119,8 @@ public class AsyncHttpResponse implements Handler.Callback {
 			if(responseCode >= 300) {
 				response = connection.getErrorStream();
 				if(response != null) responseBody = Util.inputStreamToString(response);
-				sendFailMessage(new HttpResponseException(responseCode, 
-						connection.getResponseMessage()), responseBody);
+                sendFailMessage(new HttpRetryException(connection.getResponseMessage(),
+                        responseCode), responseBody);
 			} else {
 				response = connection.getInputStream();
 				if(response != null) responseBody = Util.inputStreamToString(response);
