@@ -12,6 +12,17 @@ Features
 - Requests use a **threadpool** to cap concurrent resource usage
 - GET/POST **params builder** (RequestParams)
 
+Maven:
+=================
+```
+<dependency>
+  <groupId>com.github.leonardoxh</groupId>
+  <artifactId>AsyncOkHttpClient</artifactId>
+  <version>1.0</version>
+  <type>aar</type>
+</dependency>
+```
+
 
 Licence:
 =================
