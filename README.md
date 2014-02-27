@@ -3,14 +3,51 @@ AsyncOkHttpClient Http Client for Android
 
 This is a asynchronous library based on James Smith [Android Async Http Library](https://github.com/loopj/android-async-http).
 
-Instead use Apache http librarys this library use the Square Inc. [OkHttpClient](https://github.com/square/okhttp), so its mutch more fast and can be used on any android version.
+Instead use Apache http librarys this library use the Square Inc. [OkHttpClient](https://github.com/square/okhttp), so its mutch more fast and can be used on Android 2.2 and above.
 
 Features
 --------
 - Make **asynchronous** HTTP requests, handle responses in **anonymous callbacks**
 - HTTP requests happen **outside the UI thread**
 - Requests use a **threadpool** to cap concurrent resource usage
-- GET/POST **params builder** (RequestParams)
+- GET/POST/PUT **params builder** (RequestParams)
+
+Example:
+--------
+```
+AsyncOkHttpClient client = new AsyncOkHttpClient();
+client.get("http://www.google.com", new AsyncHttpResponse() {
+    
+  @Override
+  public void onStart() {
+    System.out.println("onStart is called on UIThread");
+  }
+
+  @Override
+  public void onFinish() {
+    System.out.println("onFinish");
+  }
+
+  @Override
+  public void onSuccess(int statusCode, String content) {
+    System.out.println("CONTENT: " + content);
+  }
+
+  @Override
+  public void onError(Throwable error, String content) {
+    //Error called check the Throwable instance
+    if(error instanceof HttpRetryException) {
+      //Get the error code
+      HttpRetryException detailError = (HttpRetryException) error;
+      System.out.println("Response Code: " + detailError.responseCode());
+    } else {
+      //Another error cause like permission not declared on AndroidManifest or time out exception
+    }
+  }
+  
+});
+```
+
 
 Maven:
 =================
