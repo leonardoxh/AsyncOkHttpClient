@@ -49,15 +49,12 @@ client.get("http://www.google.com", new AsyncHttpResponse() {
 ```
 
 
-Maven:
+Gradle:
 =================
 ```
-<dependency>
-  <groupId>com.github.leonardoxh</groupId>
-  <artifactId>AsyncOkHttpClient</artifactId>
-  <version>1.0</version>
-  <type>aar</type>
-</dependency>
+dependencies {
+    compile 'com.github.leonardoxh:AsyncOkHttpClient:+'
+}
 ```
 
 
