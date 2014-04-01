@@ -90,7 +90,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @param jsonResponse the response parsed ready to get instances
      * @see #onSuccess(int, org.json.JSONObject)
      * @see #onSuccess(int, org.json.JSONArray)
-     * @see #onError(Throwable, String)
+     * @see #onError(java.lang.Throwable, java.lang.String)
      */
 	protected void handleSuccessJsonMessage(int stautsCode, Object jsonResponse) {
 		if(jsonResponse instanceof JSONObject) {

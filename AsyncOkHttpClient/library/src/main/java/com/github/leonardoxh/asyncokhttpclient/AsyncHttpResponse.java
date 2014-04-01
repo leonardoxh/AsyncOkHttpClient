@@ -30,7 +30,7 @@ import android.os.Message;
  * and send it to the relative callback like onSuccess, onError
  * @author Leonardo Rossetto <leonardoxh@gmail.com>
  * @see #onSuccess(int, String)
- * @see #onError(Throwable, String)
+ * @see #onError(java.lang.Throwable, java.lang.String)
  * @see #onStart()
  * @see #onFinish()
  */
@@ -123,7 +123,7 @@ public class AsyncHttpResponse implements Handler.Callback {
      * Handle the fail message and call the relative callback
      * @param error the detail exception
      * @param responseBody the response body of the request (if any) or null
-     * @see #onError(Throwable, String)
+     * @see #onError(java.lang.Throwable, java.lang.String)
      */
 	protected void handleFailMessage(Throwable error, String responseBody) {
 		onError(error, responseBody);
