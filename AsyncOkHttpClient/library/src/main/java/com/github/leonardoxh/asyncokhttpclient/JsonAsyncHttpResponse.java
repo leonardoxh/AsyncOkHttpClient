@@ -49,12 +49,30 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @param response the JSON response of this request
      */
 	public void onSuccess(int statusCode, JSONArray response) { }
+	
+	public void onError(Throwable error, JSONArray response) { }
+	
+	public void onError(Throwable error, JSONObject response) { }
 
 	@Override
 	protected void sendSuccessMessage(int statusCode, String responseBody) {
 		try {
 			Object jsonResponse = parseResponse(responseBody);
-			sendMessage(obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
+			if(jsonResponse == null) {
+				sendMessage(obtainMessage(FAIL_JSON, new Object[] {statusCode, responseBody}));
+			} else {
+				sendMessage(obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
+			}
+		} catch(JSONException e) {
+			sendFailMessage(e, responseBody);
+		}
+	}
+	
+	@Override
+	protected void sendFailMessage(Throwable error, String responseBody) {
+		try {
+			Object jsonResponse = parseResponse(responseBody);
+			sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, jsonResponse}));
 		} catch(JSONException e) {
 			sendFailMessage(e, responseBody);
 		}
@@ -67,6 +85,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @throws JSONException if the JSON is invalid
      */
 	private static Object parseResponse(String response) throws JSONException {
+		if(response == null) return null;
 		response = response.trim();
 		if(response.startsWith("{") || response.startsWith("[")) {
             return new JSONTokener(response).nextValue();
@@ -78,11 +97,25 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 	public boolean handleMessage(Message message) {
 		switch(message.what) {
 			case SUCCESS_JSON:
-				Object[] response = (Object[]) message.obj;
-				handleSuccessJsonMessage(((Integer)response[0]).intValue(), response[1]);
+				Object[] successResponse = (Object[]) message.obj;
+				handleSuccessJsonMessage(((Integer)successResponse[0]).intValue(), successResponse[1]);
+				return true;
+			case FAIL_JSON:
+				Object[] failResponse = (Object[]) message.obj;
+				handleErrorJsonMessage((Throwable)failResponse[0], failResponse[1]);
 				return true;
 			default:
 				return super.handleMessage(message);
+		}
+	}
+	
+	protected void handleErrorJsonMessage(Throwable error, Object jsonResponse) {
+		if(jsonResponse instanceof JSONObject) {
+			onError(error, (JSONObject)jsonResponse);
+		} else if(jsonResponse instanceof JSONArray) {
+			onError(error, (JSONArray) jsonResponse);
+		} else {
+			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String) null);
 		}
 	}
 
@@ -94,13 +127,13 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @see #onSuccess(int, org.json.JSONArray)
      * @see #onError(java.lang.Throwable, java.lang.String)
      */
-	protected void handleSuccessJsonMessage(int stautsCode, Object jsonResponse) {
+	protected void handleSuccessJsonMessage(int stautusCode, Object jsonResponse) {
 		if(jsonResponse instanceof JSONObject) {
-			onSuccess(stautsCode, (JSONObject)jsonResponse);
+			onSuccess(stautusCode, (JSONObject)jsonResponse);
 		} else if(jsonResponse instanceof JSONArray) {
-			onSuccess(stautsCode, (JSONArray) jsonResponse);
+			onSuccess(stautusCode, (JSONArray) jsonResponse);
 		} else {
-			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), null);
+			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String) null);
 		}
 	}
 
