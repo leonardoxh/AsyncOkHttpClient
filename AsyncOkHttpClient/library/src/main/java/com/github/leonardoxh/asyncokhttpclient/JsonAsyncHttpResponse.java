@@ -59,7 +59,8 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 		try {
 			Object jsonResponse = parseResponse(responseBody);
 			if(jsonResponse == null) {
-				sendMessage(obtainMessage(FAIL_JSON, new Object[] {statusCode, responseBody}));
+				sendMessage(obtainMessage(FAIL_JSON, new Object[] {
+						new NullPointerException("Response body is null"), responseBody}));
 			} else {
 				sendMessage(obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
 			}
@@ -78,7 +79,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 				sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, jsonResponse}));
 			}
 		} catch(JSONException e) {
-			sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, responseBody}));
+			sendMessage(obtainMessage(FAIL_JSON, new Object[] {e, responseBody}));
 		}
 	}
 
@@ -117,7 +118,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 		if(jsonResponse instanceof JSONObject) {
 			onError(error, (JSONObject)jsonResponse);
 		} else if(jsonResponse instanceof JSONArray) {
-			onError(error, (JSONArray) jsonResponse);
+			onError(error, (JSONArray)jsonResponse);
 		} else {
 			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String) null);
 		}

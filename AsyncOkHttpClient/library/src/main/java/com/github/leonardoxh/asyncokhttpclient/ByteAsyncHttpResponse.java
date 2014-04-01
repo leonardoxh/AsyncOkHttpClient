@@ -2,6 +2,7 @@ package com.github.leonardoxh.asyncokhttpclient;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
 
 import com.github.leonardoxh.asyncokhttpclient.utils.Util;
@@ -21,8 +22,8 @@ public class ByteAsyncHttpResponse extends AsyncHttpResponse {
 		sendMessage(obtainMessage(SUCCESS_BYTE_ARRAY, new Object[] {statusCode, responseBody}));
 	}
 	
-	protected void sendFailMessage(int statusCode, byte[] responseBody) {
-		sendMessage(obtainMessage(FAIL_BYTE_ARRAY, new Object[] {statusCode, responseBody}));
+	protected void sendFailMessage(Throwable error, byte[] responseBody) {
+		sendMessage(obtainMessage(FAIL_BYTE_ARRAY, new Object[] {error, responseBody}));
 	}
 	
 	protected void handleSuccessByteArrayMessage(int statusCode, byte[] responseBody) {
@@ -64,10 +65,11 @@ public class ByteAsyncHttpResponse extends AsyncHttpResponse {
 			} else {
 				response = connection.getInputStream();
 				if(response != null) responseBody = Util.inputStreamToByteArray(response);
-				sendFailMessage(statusCode, responseBody);
+				sendFailMessage(new HttpRetryException(connection.getResponseMessage(), statusCode), 
+						responseBody);
 			}
 		} catch(IOException e) {
-			sendFailMessage(e, null);
+			sendFailMessage(e, (byte[])null);
 		} finally {
 			if(response != null) Util.closeQuietly(response);
 		}
