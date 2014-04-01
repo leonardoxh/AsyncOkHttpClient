@@ -16,6 +16,7 @@
 package com.github.leonardoxh.asyncokhttpclient.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,9 @@ import com.github.leonardoxh.asyncokhttpclient.RequestParams;
  * @author Leonardo Rossetto <leonardoxh@gmail.com>
  */
 public final class Util {
+	
+	private static final int EOF = -1;
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     /** No instances */
 	private Util() { }
@@ -37,9 +41,9 @@ public final class Util {
      * Convert the given InputStream to a String
      * @param source the InputStream to convert
      * @return the String converted based on given InputStream
-     * @throws Exception If the given InputStream is null or can't be accessed
+     * @throws IOException If the given InputStream is null or can't be accessed
      */
-	public static String inputStreamToString(InputStream source) throws Exception {
+	public static String inputStreamToString(InputStream source) throws IOException {
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(source));
 	    StringBuilder out = new StringBuilder();
 	    String line;
@@ -68,6 +72,16 @@ public final class Util {
 			}
 		}
 		return url;
+	}
+	
+	public static byte[] inputStreamToByteArray(InputStream source) throws IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+		int n = 0;
+		while((n = source.read(buffer)) != EOF) {
+			output.write(buffer, 0, n);
+		}
+		return output.toByteArray();
 	}
 
     /**

@@ -15,6 +15,7 @@
  */
 package com.github.leonardoxh.asyncokhttpclient;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
@@ -202,7 +203,7 @@ public class AsyncHttpResponse implements Handler.Callback {
 				if(response != null) responseBody = Util.inputStreamToString(response);
 				sendSuccessMessage(responseCode, responseBody);
 			}			
-		} catch(Exception e) {
+		} catch(IOException e) {
 			sendFailMessage(e, null);
 		} finally {
 			if(response != null) Util.closeQuietly(response);

@@ -31,6 +31,8 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 
     /** Indicate the JSON has a valid json and a success message */
 	protected static final int SUCCESS_JSON = 5;
+	
+	protected static final int FAIL_JSON = 6;
 
     /**
      * Callback that indicate request has finished success
@@ -64,7 +66,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @return a JSON parsed and ready to use
      * @throws JSONException if the JSON is invalid
      */
-	private Object parseResponse(String response) throws JSONException {
+	private static Object parseResponse(String response) throws JSONException {
 		response = response.trim();
 		if(response.startsWith("{") || response.startsWith("[")) {
             return new JSONTokener(response).nextValue();
