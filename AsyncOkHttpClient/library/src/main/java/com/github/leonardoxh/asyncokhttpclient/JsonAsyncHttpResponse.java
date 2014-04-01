@@ -64,7 +64,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 				sendMessage(obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
 			}
 		} catch(JSONException e) {
-			sendFailMessage(e, responseBody);
+			sendMessage(obtainMessage(FAIL_JSON, new Object[] {e, responseBody}));
 		}
 	}
 	
@@ -72,9 +72,13 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 	protected void sendFailMessage(Throwable error, String responseBody) {
 		try {
 			Object jsonResponse = parseResponse(responseBody);
-			sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, jsonResponse}));
+			if(jsonResponse == null) {
+				sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, responseBody}));
+			} else {
+				sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, jsonResponse}));
+			}
 		} catch(JSONException e) {
-			sendFailMessage(e, responseBody);
+			sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, responseBody}));
 		}
 	}
 
