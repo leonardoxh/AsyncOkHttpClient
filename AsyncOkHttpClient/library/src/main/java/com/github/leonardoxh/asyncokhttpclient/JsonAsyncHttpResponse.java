@@ -26,11 +26,19 @@ import android.os.Message;
  * This handles retrieve a message from
  * the HttpURLConnection and parse it in a JSON
  * @author Leonardo Rossetto <leonardoxh@gmail.com>
+ * @see #onSuccess(int, org.json.JSONArray)
+ * @see #onSuccess(int, org.json.JSONObject)
+ * @see #onError(java.lang.Throwable, org.json.JSONArray)
+ * @see #onError(java.lang.Throwable, org.json.JSONObject)
+ * @see #onError(java.lang.Throwable, java.lang.String)
  */
 public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 
-    /** Indicate the JSON has a valid json and a success message */
+    /** Indicate the response has a valid JSON and a success message */
 	protected static final int SUCCESS_JSON = 5;
+	
+	/** Indicate the response as a valid JSON and a fail message */
+	protected static final int FAIL_JSON = 6;
 
     /**
      * Callback that indicate request has finished success
@@ -47,14 +55,53 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @param response the JSON response of this request
      */
 	public void onSuccess(int statusCode, JSONArray response) { }
+	
+	/**
+	 * Callback that indicate request has finished with a fail response
+	 * but a valid JSON body, this is util when you have a server that return a
+	 * valid JSON with the fail detail on the body but the response code >= 300 
+	 * @param error the error stack trace of this response
+	 * @param response the response of this request
+	 * @see #onError(java.lang.Throwable, java.lang.String)
+	 */
+	public void onError(Throwable error, JSONArray response) { }
+	
+	/**
+	 * Callback that indicate request has finished with a fail response
+	 * but a valid JSON body, this is util when you have a server that return a
+	 * valid JSON with the fail detail on the body but the response code >= 300 
+	 * @param error the error stack trace of this response
+	 * @param response the response of this request
+	 * @see #onError(java.lang.Throwable, java.lang.String)
+	 */
+	public void onError(Throwable error, JSONObject response) { }
 
 	@Override
 	protected void sendSuccessMessage(int statusCode, String responseBody) {
 		try {
 			Object jsonResponse = parseResponse(responseBody);
-			sendMessage(obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
+			if(jsonResponse == null) {
+				sendMessage(obtainMessage(FAIL_JSON, new Object[] {
+						new NullPointerException("Response body is null"), responseBody}));
+			} else {
+				sendMessage(obtainMessage(SUCCESS_JSON, new Object[] {statusCode, jsonResponse}));
+			}
 		} catch(JSONException e) {
-			sendFailMessage(e, responseBody);
+			sendMessage(obtainMessage(FAIL_JSON, new Object[] {e, responseBody}));
+		}
+	}
+	
+	@Override
+	protected void sendFailMessage(Throwable error, String responseBody) {
+		try {
+			Object jsonResponse = parseResponse(responseBody);
+			if(jsonResponse == null) {
+				sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, responseBody}));
+			} else {
+				sendMessage(obtainMessage(FAIL_JSON, new Object[] {error, jsonResponse}));
+			}
+		} catch(JSONException e) {
+			sendMessage(obtainMessage(FAIL_JSON, new Object[] {e, responseBody}));
 		}
 	}
 
@@ -64,7 +111,8 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @return a JSON parsed and ready to use
      * @throws JSONException if the JSON is invalid
      */
-	private Object parseResponse(String response) throws JSONException {
+	private static Object parseResponse(String response) throws JSONException {
+		if(response == null) return null;
 		response = response.trim();
 		if(response.startsWith("{") || response.startsWith("[")) {
             return new JSONTokener(response).nextValue();
@@ -76,11 +124,32 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 	public boolean handleMessage(Message message) {
 		switch(message.what) {
 			case SUCCESS_JSON:
-				Object[] response = (Object[]) message.obj;
-				handleSuccessJsonMessage(((Integer)response[0]).intValue(), response[1]);
+				Object[] successResponse = (Object[]) message.obj;
+				handleSuccessJsonMessage(((Integer)successResponse[0]).intValue(), successResponse[1]);
+				return true;
+			case FAIL_JSON:
+				Object[] failResponse = (Object[]) message.obj;
+				handleErrorJsonMessage((Throwable)failResponse[0], failResponse[1]);
 				return true;
 			default:
 				return super.handleMessage(message);
+		}
+	}
+	
+	/**
+	 * Handle the error json message and call the onError callback
+	 * @param error the stack trace of error message
+	 * @param jsonResponse the json response to retrieve the instance
+	 * @see #onError(java.lang.Throwable, org.json.JSONArray)
+	 * @see #onError(java.lang.Throwable, org.json.JSONObject)
+	 */
+	protected void handleErrorJsonMessage(Throwable error, Object jsonResponse) {
+		if(jsonResponse instanceof JSONObject) {
+			onError(error, (JSONObject)jsonResponse);
+		} else if(jsonResponse instanceof JSONArray) {
+			onError(error, (JSONArray)jsonResponse);
+		} else {
+			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String)null);
 		}
 	}
 
@@ -92,13 +161,13 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      * @see #onSuccess(int, org.json.JSONArray)
      * @see #onError(java.lang.Throwable, java.lang.String)
      */
-	protected void handleSuccessJsonMessage(int stautsCode, Object jsonResponse) {
+	protected void handleSuccessJsonMessage(int stautusCode, Object jsonResponse) {
 		if(jsonResponse instanceof JSONObject) {
-			onSuccess(stautsCode, (JSONObject)jsonResponse);
+			onSuccess(stautusCode, (JSONObject)jsonResponse);
 		} else if(jsonResponse instanceof JSONArray) {
-			onSuccess(stautsCode, (JSONArray) jsonResponse);
+			onSuccess(stautusCode, (JSONArray) jsonResponse);
 		} else {
-			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), null);
+			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String) null);
 		}
 	}
 
