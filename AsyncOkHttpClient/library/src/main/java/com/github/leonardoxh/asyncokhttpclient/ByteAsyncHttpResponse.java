@@ -97,13 +97,12 @@ public class ByteAsyncHttpResponse extends AsyncHttpResponse {
 		switch(message.what) {
 			case SUCCESS_BYTE_ARRAY:
 				Object[] successResponse = (Object[])message.obj;
-				handleSuccessByteArrayMessage(((Integer) successResponse[0]).intValue(), 
+				handleSuccessByteArrayMessage(((Integer)successResponse[0]).intValue(), 
 						(byte[])successResponse[1]);
 				return true;
 			case FAIL_BYTE_ARRAY:
 				Object[] failResponse = (Object[])message.obj;
-				handleSuccessByteArrayMessage(((Integer) failResponse[0]).intValue(), 
-						(byte[])failResponse[1]);
+				handleFailByteArrayMessage((Throwable)failResponse[0], (byte[])failResponse[1]);
 				return true;
 			default:
 				return super.handleMessage(message);
