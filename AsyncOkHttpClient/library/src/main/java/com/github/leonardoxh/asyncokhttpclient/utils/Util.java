@@ -31,7 +31,10 @@ import com.github.leonardoxh.asyncokhttpclient.RequestParams;
  */
 public final class Util {
 	
+	/** Mark the end of file */
 	private static final int EOF = -1;
+	
+	/** The default buffer size for decodes */
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     /** No instances */
@@ -74,6 +77,14 @@ public final class Util {
 		return url;
 	}
 	
+	/**
+	 * Convert the given InputStream into a byte array
+	 * this class is based o Apache IOUtils common so it can read
+	 * more than 2GB with 4MB buffers
+	 * @param source the InputStream to consume
+	 * @return the byte array decoded
+	 * @throws IOException if the given InputStream can't be decoded
+	 */
 	public static byte[] inputStreamToByteArray(InputStream source) throws IOException {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];

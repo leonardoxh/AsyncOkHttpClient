@@ -119,12 +119,12 @@ public class ByteAsyncHttpResponse extends AsyncHttpResponse {
 			if(statusCode >= 300) {
 				response = connection.getErrorStream();
 				if(response != null) responseBody = Util.inputStreamToByteArray(response);
-				sendSuccessMessage(statusCode, responseBody);
+				sendFailMessage(new HttpRetryException(connection.getResponseMessage(), statusCode), 
+						responseBody);		
 			} else {
 				response = connection.getInputStream();
 				if(response != null) responseBody = Util.inputStreamToByteArray(response);
-				sendFailMessage(new HttpRetryException(connection.getResponseMessage(), statusCode), 
-						responseBody);
+				sendSuccessMessage(statusCode, responseBody);
 			}
 		} catch(IOException e) {
 			sendFailMessage(e, (byte[])null);
