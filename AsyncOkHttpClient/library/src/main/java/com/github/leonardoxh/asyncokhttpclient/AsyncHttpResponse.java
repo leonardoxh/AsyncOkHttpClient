@@ -115,6 +115,7 @@ public class AsyncHttpResponse implements Handler.Callback {
      * Handle the success message and call the relative callback
      * @param statusCode the request response status code
      * @param responseBody the request response body (if any) or null
+     * @see #onSuccess(int, java.lang.String)
      */
 	protected void handleSuccessMessage(int statusCode, String responseBody) {
 		onSuccess(statusCode, responseBody);
@@ -141,11 +142,11 @@ public class AsyncHttpResponse implements Handler.Callback {
 				return true;
 			case SUCCESS:
 				Object[] successResponse = (Object[])message.obj;
-				handleSuccessMessage(((Integer) successResponse[0]).intValue(), (String) successResponse[1]);
+				handleSuccessMessage(((Integer)successResponse[0]).intValue(), (String)successResponse[1]);
 				return true;
 			case FAIL:
 				Object[] failResponse = (Object[])message.obj;
-				handleFailMessage((Throwable)failResponse[0], (String) failResponse[1]);
+				handleFailMessage((Throwable)failResponse[0], (String)failResponse[1]);
 				return true;
 		}
 		return false;
@@ -204,7 +205,7 @@ public class AsyncHttpResponse implements Handler.Callback {
 				sendSuccessMessage(responseCode, responseBody);
 			}			
 		} catch(IOException e) {
-			sendFailMessage(e, null);
+			sendFailMessage(e, (String)null);
 		} finally {
 			if(response != null) Util.closeQuietly(response);
 		}

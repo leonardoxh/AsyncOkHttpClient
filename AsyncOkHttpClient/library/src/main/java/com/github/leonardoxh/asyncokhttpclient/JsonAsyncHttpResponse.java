@@ -26,12 +26,18 @@ import android.os.Message;
  * This handles retrieve a message from
  * the HttpURLConnection and parse it in a JSON
  * @author Leonardo Rossetto <leonardoxh@gmail.com>
+ * @see #onSuccess(int, org.json.JSONArray)
+ * @see #onSuccess(int, org.json.JSONObject)
+ * @see #onError(java.lang.Throwable, org.json.JSONArray)
+ * @see #onError(java.lang.Throwable, org.json.JSONObject)
+ * @see #onError(java.lang.Throwable, java.lang.String)
  */
 public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 
-    /** Indicate the JSON has a valid json and a success message */
+    /** Indicate the response has a valid JSON and a success message */
 	protected static final int SUCCESS_JSON = 5;
 	
+	/** Indicate the response as a valid JSON and a fail message */
 	protected static final int FAIL_JSON = 6;
 
     /**
@@ -50,8 +56,24 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
      */
 	public void onSuccess(int statusCode, JSONArray response) { }
 	
+	/**
+	 * Callback that indicate request has finished with a fail response
+	 * but a valid JSON body, this is util when you have a server that return a
+	 * valid JSON with the fail detail on the body but the response code >= 300 
+	 * @param error the error stack trace of this response
+	 * @param response the response of this request
+	 * @see #onError(java.lang.Throwable, java.lang.String)
+	 */
 	public void onError(Throwable error, JSONArray response) { }
 	
+	/**
+	 * Callback that indicate request has finished with a fail response
+	 * but a valid JSON body, this is util when you have a server that return a
+	 * valid JSON with the fail detail on the body but the response code >= 300 
+	 * @param error the error stack trace of this response
+	 * @param response the response of this request
+	 * @see #onError(java.lang.Throwable, java.lang.String)
+	 */
 	public void onError(Throwable error, JSONObject response) { }
 
 	@Override
@@ -114,13 +136,20 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 		}
 	}
 	
+	/**
+	 * Handle the error json message and call the onError callback
+	 * @param error the stack trace of error message
+	 * @param jsonResponse the json response to retrieve the instance
+	 * @see #onError(java.lang.Throwable, org.json.JSONArray)
+	 * @see #onError(java.lang.Throwable, org.json.JSONObject)
+	 */
 	protected void handleErrorJsonMessage(Throwable error, Object jsonResponse) {
 		if(jsonResponse instanceof JSONObject) {
 			onError(error, (JSONObject)jsonResponse);
 		} else if(jsonResponse instanceof JSONArray) {
 			onError(error, (JSONArray)jsonResponse);
 		} else {
-			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String) null);
+			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String)null);
 		}
 	}
 
