@@ -57,6 +57,12 @@ dependencies {
 }
 ```
 
+Contributing:
+=================
+```
+All pull request are wellcome, but first think in a real use case for the pull request, this library **will not** support lots of features.
+Before submit any change please read the CONTRIBUTING.md
+```
 
 Licence:
 =================
