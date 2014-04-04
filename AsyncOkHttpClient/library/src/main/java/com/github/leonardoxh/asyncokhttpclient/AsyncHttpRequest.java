@@ -16,7 +16,9 @@
 package com.github.leonardoxh.asyncokhttpclient;
 
 import com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod;
+import com.squareup.okhttp.OkHttpClient;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.Map;
@@ -46,14 +48,15 @@ public class AsyncHttpRequest implements Runnable {
      * @param params the request parameters for GET, POST...
      * @param request the model that contains the request method and headers
      */
-	public AsyncHttpRequest(HttpURLConnection client, AsyncHttpResponse responseHandler, 
+	public AsyncHttpRequest(OkHttpClient client, AsyncHttpResponse responseHandler, 
 			RequestParams params, RequestModel request) {
 		mResponse = responseHandler;
-		mClient = client;
+		mClient = client.open(request.getURL());
 		mRequest = request;
 		mRequestParams = params;
 	}
 	
+	/** Run the current request yaaa! */
 	@Override
 	public void run() {
 		if(mResponse == null) throw new NullPointerException("response can't be null");
@@ -61,40 +64,44 @@ public class AsyncHttpRequest implements Runnable {
 			mResponse.sendStartMessage();
 			makeRequest();
 			mResponse.sendEndMessage();
-		} catch(Exception e) {
+		} catch(IOException e) {
 			mResponse.sendFailMessage(e, null);
 			mResponse.sendEndMessage();
+		} finally {
+			disconnect();
 		}
+	}
+	
+	/** Disconnect the current request after send the end message */
+	protected void disconnect() {
+		mClient.disconnect();
 	}
 
     /**
      * Attach the request parameters and headers to request
      * and sent it to AsyncHttpResponse to execute them
-     * @throws Exception If for any reason the RequestParams cannot be write on request body
+     * @throws IOException If for any reason the RequestParams cannot be write on request body
      * @see com.github.leonardoxh.asyncokhttpclient.AsyncHttpResponse
      * @see com.github.leonardoxh.asyncokhttpclient.RequestParams
      */
-	private void makeRequest() throws Exception {
-		if(!Thread.currentThread().isInterrupted()) {
-			try {
-				if(!Thread.currentThread().isInterrupted()) {
-					if(mResponse != null) {
-						mClient.setRequestMethod(mRequest.getRequestMethod());
-						for(Map.Entry<String, String> entry : mRequest.getHeaders().entrySet()) {
-							mClient.setRequestProperty(entry.getKey(), entry.getValue());
-						}
-						if(mRequestParams != null &&
-                                !RequestMethod.GET.equals(mRequest.getRequestMethod())) {
-							OutputStream params = mClient.getOutputStream();
-							params.write(mRequestParams.getParams().getBytes());
-							params.close();
-						}
-						mResponse.sendResponseMessage(mClient);
-					}
+	private void makeRequest() throws IOException {
+		try {
+			if(!Thread.currentThread().isInterrupted() 
+					&& mResponse != null) {
+				mClient.setRequestMethod(mRequest.getRequestMethod());
+				for(Map.Entry<String, String> entry : mRequest.getHeaders().entrySet()) {
+					mClient.setRequestProperty(entry.getKey(), entry.getValue());
 				}
-			} catch(Exception e) {
-				if(!Thread.currentThread().isInterrupted()) throw e;
+				if(mRequestParams != null && 
+						!RequestMethod.GET.equals(mRequest.getRequestMethod())) {
+					OutputStream params = mClient.getOutputStream();
+					mRequestParams.writeTo(params);
+					params.close();
+				}
+				mResponse.sendResponseMessage(mClient);
 			}
+		} catch(IOException e) {
+			if(!Thread.currentThread().isInterrupted()) throw e;
 		}
 	}
 	

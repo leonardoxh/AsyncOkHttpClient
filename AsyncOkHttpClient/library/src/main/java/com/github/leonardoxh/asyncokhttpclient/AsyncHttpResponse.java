@@ -203,7 +203,7 @@ public class AsyncHttpResponse implements Handler.Callback {
 				response = connection.getInputStream();
 				if(response != null) responseBody = Util.inputStreamToString(response);
 				sendSuccessMessage(responseCode, responseBody);
-			}			
+			}
 		} catch(IOException e) {
 			sendFailMessage(e, (String)null);
 		} finally {

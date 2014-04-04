@@ -15,6 +15,8 @@
  */
 package com.github.leonardoxh.asyncokhttpclient;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -71,6 +73,10 @@ public class RequestParams {
 			result.append(entry.getValue());
 		}
 		return result.toString();
+	}
+	
+	public void writeTo(OutputStream output) throws IOException {
+		output.write(getParams().getBytes());
 	}
 
     @Override

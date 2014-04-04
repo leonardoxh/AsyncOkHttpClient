@@ -15,7 +15,7 @@
  */
 package com.github.leonardoxh.asyncokhttpclient;
 
-import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -31,6 +31,12 @@ import com.squareup.okhttp.OkHttpClient;
  */
 public class AsyncOkHttpClient {
 
+	/** The default read time out in seconds */
+	private static final long DEFAULT_READ_TIMEOUT = 20;
+	
+	/** The default connect timeout in seconds */
+	private static final long DEFAULT_CONNECT_TIMEOUT = 15;
+	
     /** The executor that will execute the request on a separated thread*/
 	private ThreadPoolExecutor mThreadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
@@ -39,6 +45,11 @@ public class AsyncOkHttpClient {
 
     /** The main actor of this library tanks to Square Inc. */
 	private final OkHttpClient mClient = new OkHttpClient();
+	
+	public AsyncOkHttpClient() {
+		mClient.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS);
+		mClient.setReadTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS);
+	}
 
     /**
      * Return a instance used for the requests on this client
@@ -72,7 +83,8 @@ public class AsyncOkHttpClient {
 	}
 
     /**
-     * Set the connection time out for the requests based on the time unit
+     * Set the connection timeout for the requests based on the time unit
+     * 0 means no timeout
      * @param timeout a new timeout value
      * @param unit the unit for the timeout
      * @see java.util.concurrent.TimeUnit
@@ -80,38 +92,37 @@ public class AsyncOkHttpClient {
 	public void setConnectionTimeut(long timeout, TimeUnit unit) {
 		mClient.setConnectTimeout(timeout, unit);
 	}
+	
+	/**
+	 * Set the read timeout for the requests based on the time unit
+	 * 0 means no timeout
+     * @param timeout a new timeout value
+     * @param unit the unit for the timeout
+     * @see java.util.concurrent.TimeUnit
+	 */
+	public void setReadTieout(long timeout, TimeUnit unit) {
+		mClient.setReadTimeout(timeout, unit);
+	}
 
     /**
      * Send the specific request for the request response
      * @param client the client for execute the request
      * @param url the url for execute
      * @param response the response handler for this request
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
      * @param params the request parameters null parameters means no parameters
+     * @param requestMethod the request method for requests
      * @see com.github.leonardoxh.asyncokhttpclient.AsyncHttpRequest
+     * @see com.github.leonardoxh.asyncokhttpclient.utils.RequestMethod
      */
 	protected void sendRequest(OkHttpClient client, String url, AsyncHttpResponse response, 
-			String contentType, RequestParams params) {
+			RequestParams params, String requestMethod) {
 		try {
+			mRequest.setRequestMethod(requestMethod);
 			mRequest.setUrl(new URL(url));
-			HttpURLConnection conn = client.open(mRequest.getURL());
-			if(contentType != null) conn.setRequestProperty("Content-Type", contentType);
-			mThreadPool.submit(new AsyncHttpRequest(conn, response, params, mRequest));
-		} catch(Exception e) {
-			e.printStackTrace();
+			mThreadPool.submit(new AsyncHttpRequest(client, response, params, mRequest));
+		} catch(MalformedURLException e) {
+			e.printStackTrace(); //TODO
 		}
-	}
-
-    /**
-     * Execute a GET request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param response the response handler to manage the results
-     */
-	public void get(String url, String contentType, AsyncHttpResponse response) {
-		get(url, contentType, null, response);
 	}
 
     /**
@@ -120,7 +131,7 @@ public class AsyncOkHttpClient {
      * @param response the response handler to manage the results
      */
 	public void get(String url, AsyncHttpResponse response) {
-		get(url, null, null, response);
+		get(url, null, response);
 	}
 
     /**
@@ -130,31 +141,8 @@ public class AsyncOkHttpClient {
      * @param response the response handler to manage the results
      */
 	public void get(String url, RequestParams params, AsyncHttpResponse response) {
-		get(url, null, params, response);
-	}
-
-    /**
-     * Execute a GET request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param params the request parameters null parameters means no parameters
-     * @param response the response handler to manage the results
-     */
-	public void get(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod(RequestMethod.GET);
-		sendRequest(mClient, Util.getUrlWithQueryString(url, params), response, contentType, params);
-	}
-
-    /**
-     * Execute a POST request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param response the response handler to manage the results
-     */
-	public void post(String url, String contentType, AsyncHttpResponse response) {
-		post(url, contentType, null, response);
+		sendRequest(mClient, Util.getUrlWithQueryString(url, params), 
+				response, params, RequestMethod.GET);
 	}
 
     /**
@@ -163,7 +151,7 @@ public class AsyncOkHttpClient {
      * @param response the response handler to manage the results
      */
 	public void post(String url, AsyncHttpResponse response) {
-		post(url, null, null, response);
+		post(url, null, response);
 	}
 
     /**
@@ -173,53 +161,8 @@ public class AsyncOkHttpClient {
      * @param response the response handler to manage the results
      */
 	public void post(String url, RequestParams params, AsyncHttpResponse response) {
-		post(url, null, params, response);
-	}
-
-    /**
-     * Execute a POST request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param params the request parameters null parameters means no parameters
-     * @param response the response handler to manage the results
-     */
-	public void post(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod(RequestMethod.POST);
-		sendRequest(mClient, url, response, contentType, params);
-	}
-
-    /**
-     * Execute a PUT request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param params the request parameters null parameters means no parameters
-     * @param response the response handler to manage the results
-     */
-	public void put(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod(RequestMethod.PUT);
-		sendRequest(mClient, url, response, contentType, params);
-	}
-
-    /**
-     * Execute a PUT request
-     * @param url the url for execute
-     * @param response the response handler to manage the results
-     */
-	public void put(String url, AsyncHttpResponse response) {
-		put(url, null, null, response);
-	}
-
-    /**
-     * Execute a PUT request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param response the response handler to manage the results
-     */
-	public void put(String url, String contentType, AsyncHttpResponse response) {
-		put(url, contentType, null, response);
+		sendRequest(mClient, url, response, params,
+				RequestMethod.POST);
 	}
 
     /**
@@ -229,40 +172,17 @@ public class AsyncOkHttpClient {
      * @param response the response handler to manage the results
      */
 	public void put(String url, RequestParams params, AsyncHttpResponse response) {
-		put(url, null, params, response);
+		sendRequest(mClient, url, response, params,
+				RequestMethod.PUT);
 	}
 
     /**
-     * Execute a DELETE request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param params the request parameters null parameters means no parameters
-     * @param response the response handler to manage the results
-     */
-	public void delete(String url, String contentType, RequestParams params, AsyncHttpResponse response) {
-		mRequest.setRequestMethod(RequestMethod.DELETE);
-		sendRequest(mClient, url, response, contentType, params);
-	}
-
-    /**
-     * Execute a DELETE request
+     * Execute a PUT request
      * @param url the url for execute
      * @param response the response handler to manage the results
      */
-	public void delete(String url, AsyncHttpResponse response) {
-		delete(url, null, null, response);
-	}
-
-    /**
-     * Execute a DELETE request
-     * @param url the url for execute
-     * @param contentType the content type for this request if this parameter
-     *                    is null a default Content-Type will be used
-     * @param response the response handler to manage the results
-     */
-	public void delete(String url, String contentType, AsyncHttpResponse response) {
-		delete(url, contentType, null, response);
+	public void put(String url, AsyncHttpResponse response) {
+		put(url, null, response);
 	}
 
     /**
@@ -272,7 +192,17 @@ public class AsyncOkHttpClient {
      * @param response the response handler to manage the results
      */
 	public void delete(String url, RequestParams params, AsyncHttpResponse response) {
-		delete(url, null, params, response);
+		sendRequest(mClient, url, response, params,
+				RequestMethod.DELETE);
+	}
+
+    /**
+     * Execute a DELETE request
+     * @param url the url for execute
+     * @param response the response handler to manage the results
+     */
+	public void delete(String url, AsyncHttpResponse response) {
+		delete(url, null, response);
 	}
 	
 }
