@@ -52,6 +52,10 @@ client.get("http://www.google.com", new AsyncHttpResponse() {
 Gradle:
 =================
 ```
+Latest stable version is: 1.0 and snapshot is 1.1-SNAPSHOT
+```
+
+```
 dependencies {
     compile 'com.github.leonardoxh:AsyncOkHttpClient:+'
 }
@@ -60,7 +64,8 @@ dependencies {
 Contributing:
 =================
 ```
-All pull request are wellcome, but first think in a real use case for the pull request, this library **will not** support lots of features.
+All pull request are wellcome, but first think in a real use case for the 
+pull request, this library **will not** support lots of features.
 Before submit any change please read the CONTRIBUTING.md
 ```
 
