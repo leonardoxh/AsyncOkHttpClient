@@ -61,6 +61,12 @@ dependencies {
 }
 ```
 
+Changelog:
+=================
+```
+Read the Changelog.md
+```
+
 Contributing:
 =================
 ```
