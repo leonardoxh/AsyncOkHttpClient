@@ -52,12 +52,12 @@ client.get("http://www.google.com", new AsyncHttpResponse() {
 Gradle:
 =================
 ```
-Latest stable version is: 1.0 and snapshot is 1.1-SNAPSHOT
+Latest stable version is: 1.1 and snapshot is 1.1-SNAPSHOT
 ```
 
 ```
 dependencies {
-    compile 'com.github.leonardoxh:AsyncOkHttpClient:+'
+    compile 'com.github.leonardoxh:AsyncOkHttpClient:1.1@aar'
 }
 ```
 
