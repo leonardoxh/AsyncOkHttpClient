@@ -149,7 +149,7 @@ public class JsonAsyncHttpResponse extends AsyncHttpResponse {
 		} else if(jsonResponse instanceof JSONArray) {
 			onError(error, (JSONArray)jsonResponse);
 		} else if(jsonResponse == null) {
-			onError(new JSONException("Null response"+error.getLocalizedMessage()), (String)null);
+			onError(new JSONException("Null response "+error.getLocalizedMessage()), (String)null);
 		} else {
 			onError(new JSONException("Unexpected type " + jsonResponse.getClass().getName()), (String)null);
 		}
