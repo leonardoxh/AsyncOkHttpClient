@@ -5,6 +5,13 @@ This is a asynchronous library based on James Smith [Android Async Http Library]
 
 Instead use Apache http librarys this library use the Square Inc. [OkHttpClient](https://github.com/square/okhttp), so its mutch more fast and can be used on Android 2.2 and above.
 
+Important Note:
+--------
+Now the OkHttpClient have their own async API, which means this library will no be longer maintained.
+I think the Square OkHttpClient async API is more effetive in allways, and have a better support for Async calls and features, no other layer on top of it is required, so...
+I will release on next weeks a final version of this library, but I strongly recommend use the OkHttp async layer instead of this.
+--------
+
 Features
 --------
 - Make **asynchronous** HTTP requests, handle responses in **anonymous callbacks**
